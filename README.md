@@ -19,9 +19,12 @@ Minimal Chomksy-3 parser and evaluator toy-project
    Example Regex: `a[^b-d]e`\
    Example Matches: `axe`
 6. Symbol Repetitions:\
-   Example Regex: `ab+` / `ab*`\
-   Example Matches: `ab`, `abb` / `a`, `ab`
+   Example Regex: `ab+` / `ab*`, `ab?`\
+   Example Matches: `ab`, `abb` / `a`, `abbb` / `a`, `ab`
 7. Escaping:\
    Example Regex: `a\[b\+`\
    Example Matches: `a[b+`
 8. t.b.c
+
+## Available Features
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet
