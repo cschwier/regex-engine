@@ -11,11 +11,3 @@ class Parser:
 
         acceptance_states = list(transitions.values())[-1].values()
         return Dfa(acceptance_states, transitions)
-
-
-if __name__ == "__main__":
-    regex = input()
-    dfa = Parser.parse(regex)
-
-    while (sequence := input()) != "":
-        print(dfa.check(sequence))
