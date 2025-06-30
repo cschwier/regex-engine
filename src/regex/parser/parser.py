@@ -15,7 +15,7 @@ class Parser:
 
 if __name__ == "__main__":
     regex = input()
-    sequence = input()
-
     dfa = Parser.parse(regex)
-    print(dfa.check(sequence))
+
+    while (sequence := input()) != "":
+        print(dfa.check(sequence))
