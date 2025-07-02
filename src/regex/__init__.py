@@ -4,9 +4,9 @@ from src.regex.parser import Parser
 if __name__ == "__main__":
     print("Regex: ", end="")
     regex = input()
-    dfa = Parser.parse(regex)
+    predicate = Parser(regex).as_predicate()
 
     print("Input: ", end="")
     while (sequence := input()) != "":
-        print(f"Matches: {dfa.check(sequence)}")
+        print(f"Matches: {predicate(sequence)}")
         print("Input: ", end="")

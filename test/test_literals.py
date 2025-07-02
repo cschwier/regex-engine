@@ -1,12 +1,11 @@
 from src.regex.parser import Parser
 
 
-def test_abc_true():
-    dfa = Parser.parse("abc")
+def test_abc_acceptance():
+    checker = Parser("abc").as_predicate()
+    assert checker("abc")
 
-    assert dfa.check("abc")
-
-def test_abc_false():
-    dfa = Parser.parse("abc")
-
-    assert not dfa.check("abcc")
+def test_abc_rejection():
+    checker = Parser("abc").as_predicate()
+    assert not checker("abcx")
+    assert not checker("xabc")
