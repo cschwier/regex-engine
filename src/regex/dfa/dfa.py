@@ -1,12 +1,5 @@
-transitions = {
-    0: {"a": 1},
-    1: {"b": 2},
-    2: {"c": 3},
-}
-
-
 class Dfa:
-    def __init__(self, end_states: list[int], transitions: dict[int, dict[str, int]] = transitions) -> None:
+    def __init__(self, end_states: list[int], transitions: dict[int, dict[str, int]]) -> None:
         self.transitions = transitions
         self.end_states = end_states
 
@@ -23,14 +16,3 @@ class Dfa:
                 return False
 
         return current_state in self.end_states
-
-
-if __name__ == "__main__":
-    rule = "abc"
-    inp = "abcd"
-
-    dfa = Dfa([3])
-
-    result = dfa.check(inp)
-
-    print(result)   # --> True
