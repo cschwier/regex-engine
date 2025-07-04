@@ -1,6 +1,6 @@
 import unittest
 
-from src.regex import Parser
+from regex import Parser
 
 class RegexWildcardTest(unittest.TestCase):
     def setUp(self) -> None:

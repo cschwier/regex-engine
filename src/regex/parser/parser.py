@@ -1,13 +1,13 @@
 from typing import Callable
 
-from src.regex.dfa import Dfa
+from regex.dfa import Dfa
 
 
 class Parser:
 
     def __init__(self, pattern: str):
         self.pattern = pattern
-        self.dfa = self._parse()
+        self._dfa = self._parse()
 
     def _parse(self) -> Dfa:
         transitions = {}
@@ -19,5 +19,5 @@ class Parser:
         return Dfa(acceptance_states, transitions)
 
     def as_predicate(self) -> Callable[[str], bool]:
-        predicate = lambda inp : self.dfa.check(inp)
+        predicate = lambda inp : self._dfa.check(inp)
         return predicate
