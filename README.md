@@ -6,7 +6,7 @@ Minimal Chomksy-3 parser and evaluator toy-project
 1. [x] Exact words of trivial literals:\
    Example Regex: `abc`\
    Example Matches: `abc`
-2. [ ] Wildcard:\
+2. [x] Wildcard:\
    Example Regex: `a.c`\
    Example Matches: `abc`, `aöc`
 3. [ ] (literal) Character Class:\

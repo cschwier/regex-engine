@@ -11,8 +11,16 @@ class Dfa:
             if next_state_lookup is None:
                 return False
 
+            # Currently, next_state_lookup only has 1 key.
+            if "." in next_state_lookup.keys():
+                current_state = next_state_lookup["."]
+                continue
+
             current_state = next_state_lookup.get(i)
             if current_state is None:
                 return False
 
+
+
         return current_state in self.end_states
+
