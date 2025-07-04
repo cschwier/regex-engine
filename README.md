@@ -28,3 +28,7 @@ Minimal Chomksy-3 parser and evaluator toy-project
 
 ## Available Features
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet
+
+## Idea
+
+It should be possible to either do this via different classes or functionally (lambdas in Python eval). Let's do both :) 
