@@ -1,6 +1,7 @@
 from typing import Callable
 
 from regex.dfa import Dfa
+from regex.dfa.dfa import LiteralMatcher, WildcardMatcher, CharacterClassMatcher
 
 
 class Parser:
@@ -12,11 +13,31 @@ class Parser:
     def _parse(self) -> Dfa:
         transitions = {}
 
-        for i, char in enumerate(self.pattern):
-            transitions[i] = {char: i+1}
+        i = 0
+        while i < len(self.pattern):
+            character = self.pattern[i]
+            match character:
+                case "[":
+                    i += 1
+                    character_group = ""
+                    while i < len(self.pattern):
+                        character = self.pattern[i]
+                        i += 1
+                        if character == "]": break
+                        character_group += character
 
-        acceptance_states = list(transitions.values())[-1].values()
+                    print(character_group)
+                    transitions[i] = CharacterClassMatcher(character_group, i+1)
+                    i += 1
+                case ".":
+                    transitions[i] = WildcardMatcher(i+1)
+                case _:
+                    transitions[i] = LiteralMatcher(character, i+1)
+            i += 1
+
+        acceptance_states = list(transitions.values())[-1].next_state
         return Dfa(acceptance_states, transitions)
+
 
     def as_predicate(self) -> Callable[[str], bool]:
         predicate = lambda inp : self._dfa.check(inp)
