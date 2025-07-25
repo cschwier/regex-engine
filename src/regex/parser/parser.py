@@ -22,13 +22,11 @@ class Parser:
                     character_group = ""
                     while i < len(self.pattern):
                         character = self.pattern[i]
-                        i += 1
-                        if character == "]": break
+                        if character == "]":
+                            break
                         character_group += character
-
-                    print(character_group)
+                        i += 1
                     transitions[i] = CharacterClassMatcher(character_group, i+1)
-                    i += 1
                 case ".":
                     transitions[i] = WildcardMatcher(i+1)
                 case _:
