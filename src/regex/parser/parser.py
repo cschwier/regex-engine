@@ -16,6 +16,7 @@ class Parser:
         i = 0
         while i < len(self.pattern):
             character = self.pattern[i]
+            matcher_state_index = i
             match character:
                 case "[":
                     i += 1
@@ -26,11 +27,11 @@ class Parser:
                             break
                         character_group += character
                         i += 1
-                    transitions[i] = CharacterClassMatcher(character_group, i+1)
+                    transitions[matcher_state_index] = CharacterClassMatcher(character_group, i+1)
                 case ".":
-                    transitions[i] = WildcardMatcher(i+1)
+                    transitions[matcher_state_index] = WildcardMatcher(i+1)
                 case _:
-                    transitions[i] = LiteralMatcher(character, i+1)
+                    transitions[matcher_state_index] = LiteralMatcher(character, i+1)
             i += 1
 
         acceptance_states = list(transitions.values())[-1].next_state
