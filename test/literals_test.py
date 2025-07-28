@@ -2,6 +2,7 @@ import unittest
 
 from regex import Parser
 
+
 class RegexWildcardTest(unittest.TestCase):
     def setUp(self) -> None:
         self.testee = Parser("abc").as_predicate()
@@ -10,7 +11,7 @@ class RegexWildcardTest(unittest.TestCase):
         assert self.testee("abc")
 
     def test_abc_prefix_rejection(self):
-        assert not  self.testee("xabc")
+        assert not self.testee("xabc")
 
     def test_abc_suffix_rejection(self):
-        assert not  self.testee("abcx")
+        assert not self.testee("abcx")
