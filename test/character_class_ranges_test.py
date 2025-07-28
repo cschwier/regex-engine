@@ -33,3 +33,6 @@ class RegexWildcardTest(unittest.TestCase):
 
     def test_multiple_correct_literals2_rejection(self):
         self.assertFalse(self.testee("ay4c"))
+
+    def test_reject_range_symbol(self):
+        self.assertFalse(self.testee("a-c"))
