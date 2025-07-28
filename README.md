@@ -9,7 +9,7 @@ Minimal Chomksy-3 parser and evaluator toy-project
 2. [x] Wildcard:\
    Example Regex: `a.c`\
    Example Matches: `abc`, `aöc`
-3. [ ] (literal) Character Class:\
+3. [x] (literal) Character Class:\
    Example Regex: `a[bcd]e`\
    Example Matches: `abe`, `ace`, `ade`
 4. [ ] Character Group Class:\
