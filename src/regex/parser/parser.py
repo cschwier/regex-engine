@@ -1,8 +1,23 @@
-from typing import Callable
+from typing import Callable, Any
 
 from regex.dfa import Dfa
 from regex.dfa.dfa import LiteralMatcher, WildcardMatcher, CharacterClassMatcher
+from regex.utils import CharacterRange
 
+def parse_character_group(character_group: str) -> list[CharacterRange]:
+    stack = []
+
+    foo = iter(character_group)
+
+    while c := next(foo, None):
+        match c:
+            case "-":
+                old = stack.pop()
+                stack.append(CharacterRange(old.start, ord(next(foo))))
+            case _:
+                stack.append(CharacterRange(ord(c), ord(c)))
+
+    return stack
 
 class Parser:
 
@@ -27,7 +42,8 @@ class Parser:
                             break
                         character_group += character
                         i += 1
-                    transitions[matcher_state_index] = CharacterClassMatcher(character_group, i+1)
+                    numeric_character_group = parse_character_group(character_group)
+                    transitions[matcher_state_index] = CharacterClassMatcher(numeric_character_group, i+1)
                 case ".":
                     transitions[matcher_state_index] = WildcardMatcher(i+1)
                 case _:
