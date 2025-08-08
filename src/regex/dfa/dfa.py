@@ -1,6 +1,7 @@
 from typing import Callable
 from abc import ABC, abstractmethod
 
+from regex.utils import CharacterRange
 
 class Matcher(ABC):
     next_state: int
@@ -29,13 +30,14 @@ class WildcardMatcher(Callable[[str], int], Matcher):
 
 class CharacterClassMatcher(Callable[[str], int], Matcher):
     # TODO: Tests fail here
-    def __init__(self, character_class: str, target_state: int):
+    def __init__(self, character_class: list[CharacterRange], target_state: int):
         self.character_class = character_class
         self.next_state = target_state
 
     def __call__(self, symbol: str) -> int | None:
-        if symbol in self.character_class:
-            return self.next_state
+        for _range in self.character_class:
+            if _range.start <= ord(symbol) <= _range.end:
+                return self.next_state
         return None
 
 class EverythingExceptMatcher(Callable[[str], int], Matcher):
