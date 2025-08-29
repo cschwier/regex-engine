@@ -3,7 +3,7 @@ import unittest
 from regex import Parser
 
 
-class RegexWildcardTest(unittest.TestCase):
+class CharacterClassRangesTest(unittest.TestCase):
     def setUp(self) -> None:
         self.testee = Parser("a[x-z3-5]c").as_predicate()
 
