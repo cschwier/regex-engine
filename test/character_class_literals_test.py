@@ -3,7 +3,7 @@ import unittest
 from regex import Parser
 
 
-class RegexWildcardTest(unittest.TestCase):
+class CharacterClassLiteralsTest(unittest.TestCase):
     def setUp(self) -> None:
         self.testee = Parser("a[xy.]c").as_predicate()
 
