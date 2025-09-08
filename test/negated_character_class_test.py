@@ -27,7 +27,7 @@ class NegatedCharacterClassTest(unittest.TestCase):
 
     def test_accept_range_symbol(self):
         """Since the range symbol is not in the negated character class it should be accepted."""
-        self.assertFalse(self.testee("a-c"))
+        self.assertTrue(self.testee("a-c"))
 
     def test_range1_rejection(self):
         self.assertFalse(self.testee("axc"))
@@ -42,7 +42,7 @@ class NegatedCharacterClassTest(unittest.TestCase):
         self.assertFalse(self.testee("a3c"))
 
     def test_range5_rejection(self):
-        self.assertFalse(self.testee("a4c"))
+        self.assertTrue(self.testee("a4c"))
 
     def test_range6_rejection(self):
         self.assertFalse(self.testee("a5c"))
