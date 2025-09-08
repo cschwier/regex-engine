@@ -30,13 +30,15 @@ class WildcardMatcher(Callable[[str], int], Matcher):
 
 class CharacterClassMatcher(Callable[[str], int], Matcher):
     # TODO: Tests fail here
-    def __init__(self, character_class: list[CharacterRange], target_state: int):
+    def __init__(self, character_class: list[CharacterRange], is_negation: bool, target_state: int):
         self.character_class = character_class
+        self.is_negation = is_negation
         self.next_state = target_state
 
     def __call__(self, symbol: str) -> int | None:
         for _range in self.character_class:
-            if _range.start <= ord(symbol) <= _range.end:
+            # Since both sides are bool, != is effectively XOR
+            if self.is_negation != (_range.start <= ord(symbol) <= _range.end):
                 return self.next_state
         return None
 

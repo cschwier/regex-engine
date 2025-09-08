@@ -4,10 +4,13 @@ from regex.dfa import Dfa
 from regex.dfa.dfa import LiteralMatcher, WildcardMatcher, CharacterClassMatcher
 from regex.utils import CharacterRange
 
-def parse_character_group(character_group: str) -> list[CharacterRange]:
+def parse_character_group(character_group: str) -> tuple[list[CharacterRange], bool]:
     stack = []
 
     foo = iter(character_group)
+    is_negotiation = character_group[0] == "^"
+    if is_negotiation:
+        next(foo)
 
     while c := next(foo, None):
         match c:
@@ -17,7 +20,7 @@ def parse_character_group(character_group: str) -> list[CharacterRange]:
             case _:
                 stack.append(CharacterRange(ord(c), ord(c)))
 
-    return stack
+    return stack, is_negotiation
 
 class Parser:
 
@@ -42,8 +45,8 @@ class Parser:
                             break
                         character_group += character
                         i += 1
-                    numeric_character_group = parse_character_group(character_group)
-                    transitions[matcher_state_index] = CharacterClassMatcher(numeric_character_group, i+1)
+                    numeric_character_group, is_negation = parse_character_group(character_group)
+                    transitions[matcher_state_index] = CharacterClassMatcher(numeric_character_group, is_negation, i+1)
                 case ".":
                     transitions[matcher_state_index] = WildcardMatcher(i+1)
                 case _:
