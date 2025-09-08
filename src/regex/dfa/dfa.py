@@ -1,5 +1,6 @@
 from typing import Callable
 from abc import ABC, abstractmethod
+from unittest import case
 
 from regex.utils import CharacterRange
 
@@ -36,10 +37,19 @@ class CharacterClassMatcher(Callable[[str], int], Matcher):
         self.next_state = target_state
 
     def __call__(self, symbol: str) -> int | None:
-        for _range in self.character_class:
-            # Since both sides are bool, != is effectively XOR
-            if self.is_negation != (_range.start <= ord(symbol) <= _range.end):
-                return self.next_state
+        for i, _range in enumerate(self.character_class):
+            is_in_range = _range.start <= ord(symbol) <= _range.end
+
+            match self.is_negation, is_in_range:
+                case True, True:
+                    return None
+                case True, False:
+                    if i == len(self.character_class) - 1:
+                        return self.next_state
+                    continue
+                case False, True:
+                    return self.next_state
+
         return None
 
 class EverythingExceptMatcher(Callable[[str], int], Matcher):
