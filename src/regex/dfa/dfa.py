@@ -35,17 +35,12 @@ class CharacterClassMatcher(Callable[[str], int], Matcher):
         self.next_state = target_state
 
     def __call__(self, symbol: str) -> int | None:
-        for i, _range in enumerate(self.character_class):
-            is_in_range = _range.start <= ord(symbol) <= _range.end
+        predicate: Callable[[CharacterRange], bool] = lambda char_range: (char_range.start <= ord(symbol) <= char_range.end)
 
-            match self.is_negation, is_in_range:
-                case True, True:
-                    return None
-                case True, False:
-                    if i == len(self.character_class) - 1:
-                        return self.next_state
-                case False, True:
-                    return self.next_state
+        # != is XOR since both are bool
+        # Either negation + not any OR not negated + any
+        if self.is_negation != any(predicate(cr) for cr in self.character_class):
+            return self.next_state
 
         return None
 
