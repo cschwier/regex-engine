@@ -45,7 +45,6 @@ class CharacterClassMatcher(Callable[[str], int], Matcher):
                 case True, False:
                     if i == len(self.character_class) - 1:
                         return self.next_state
-                    continue
                 case False, True:
                     return self.next_state
 
