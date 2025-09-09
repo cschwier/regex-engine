@@ -1,6 +1,5 @@
 from typing import Callable
 from abc import ABC, abstractmethod
-from unittest import case
 
 from regex.utils import CharacterRange
 
