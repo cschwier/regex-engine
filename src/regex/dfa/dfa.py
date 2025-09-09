@@ -30,7 +30,6 @@ class WildcardMatcher(Callable[[str], int], Matcher):
         return self.next_state
 
 class CharacterClassMatcher(Callable[[str], int], Matcher):
-    # TODO: Tests fail here
     def __init__(self, character_class: list[CharacterRange], is_negation: bool, target_state: int):
         self.character_class = character_class
         self.is_negation = is_negation
