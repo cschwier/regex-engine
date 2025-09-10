@@ -7,16 +7,16 @@ from regex.utils import CharacterRange
 def parse_character_group(character_group: str) -> tuple[list[CharacterRange], bool]:
     stack = []
 
-    foo = iter(character_group)
+    character_group_iterator = iter(character_group)
     is_negotiation = character_group[0] == "^"
     if is_negotiation:
-        next(foo)
+        next(character_group_iterator)
 
-    while c := next(foo, None):
+    while c := next(character_group_iterator, None):
         match c:
             case "-":
                 old = stack.pop()
-                stack.append(CharacterRange(old.start, ord(next(foo))))
+                stack.append(CharacterRange(old.start, ord(next(character_group_iterator))))
             case _:
                 stack.append(CharacterRange(ord(c), ord(c)))
 
