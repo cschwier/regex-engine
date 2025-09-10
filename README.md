@@ -1,4 +1,5 @@
 # regex-engine
+
 Minimal Chomksy-3 parser and evaluator toy-project
 
 ## Planned features in order of implementation:
@@ -18,15 +19,23 @@ Minimal Chomksy-3 parser and evaluator toy-project
 5. [x] Character Class Negations:\
    Example Regex: `a[^b-d]e`\
    Example Matches: `axe`
-6. [ ] Symbol Repetitions:\
-   Example Regex: `ab+` / `ab*`, `ab?`\
-   Example Matches: `ab`, `abb` / `a`, `abbb` / `a`, `ab`
+6. [ ] Greedy Quantifiers:\
+   Example Regex: `ab+` / `ab*` / `ab?`/ `ab{3}` / `ab{2,}`, `ab{2,3}`\
+   Example Matches: `ab`, `abb` / `a`, `abbb` / `a`, `ab` / `abbb` / `abb`, `abbbbbbbbbb` / `abb`, `abbb`
 7. [ ] Escaping:\
-   Example Regex: `a\[b\+`\
+   Example Regex: `a\[b\+`
    Example Matches: `a[b+`
-8. t.b.c
+8. [ ] Capture Groups:\
+   Example Regex:\
+   Example Matches:\
+   Example Groups:\
+9. [ ] Lazy Quantifiers:\
+   Example Regex: `ab*?`, `ab??`, `ab{2,5}?`
+   Example Matches: `abb`,
+10. t.b.c
 
 ## Available Features
+
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet
 
 ## Idea
