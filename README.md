@@ -12,10 +12,10 @@ Minimal Chomksy-3 parser and evaluator toy-project
 3. [x] (literal) Character Class:\
    Example Regex: `a[bcd]e`\
    Example Matches: `abe`, `ace`, `ade`
-4. [ ] Character Group Class:\
+4. [x] Character Class:\
    Example Regex: `a[b-d]e`\
    Example Matches: `abe`, `ace`, `ade`
-5. [ ] Character Class Negations:\
+5. [x] Character Class Negations:\
    Example Regex: `a[^b-d]e`\
    Example Matches: `axe`
 6. [ ] Symbol Repetitions:\
