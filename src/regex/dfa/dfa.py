@@ -39,10 +39,7 @@ class CharacterClassMatcher(Callable[[str], int], Matcher):
 
         # != is XOR since both are bool
         # Either negation + not any OR not negated + any
-        if self.is_negation != any(predicate(cr) for cr in self.character_class):
-            return self.next_state
-
-        return None
+        return self.next_state if self.is_negation != any(predicate(cr) for cr in self.character_class) else None
 
 class EverythingExceptMatcher(Callable[[str], int], Matcher):
     pass
