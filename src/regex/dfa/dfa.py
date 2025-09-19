@@ -41,8 +41,6 @@ class CharacterClassMatcher(Callable[[str], int], Matcher):
         # Either negation + not any OR not negated + any
         return self.next_state if self.is_negation != any(predicate(cr) for cr in self.character_class) else None
 
-class EverythingExceptMatcher(Callable[[str], int], Matcher):
-    pass
 
 
 class Dfa:
