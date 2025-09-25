@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional
 from abc import ABC, abstractmethod
 
 from regex.utils import CharacterRange
@@ -7,7 +7,7 @@ class Matcher(ABC):
     next_state: int
 
     @abstractmethod
-    def __call__(self, symbol: str) -> int | None:
+    def __call__(self, remaining_text: str) -> tuple[Optional[int], str]:
         pass
 
 
@@ -16,17 +16,17 @@ class LiteralMatcher(Callable[[str], int], Matcher):
         self.literal = literal
         self.next_state = next_state
 
-    def __call__(self, symbol: str) -> int | None:
-        if symbol == self.literal:
-            return self.next_state
-        return None
+    def __call__(self, remaining_text: str):
+        if remaining_text[0] == self.literal:
+            return self.next_state, remaining_text[1:]
+        return None, remaining_text
 
 class WildcardMatcher(Callable[[str], int], Matcher):
     def __init__(self, next_state: int):
         self.next_state = next_state
 
-    def __call__(self, _: str):
-        return self.next_state
+    def __call__(self, remaining_text: str):
+        return self.next_state, remaining_text[1:]
 
 class CharacterClassMatcher(Callable[[str], int], Matcher):
     def __init__(self, character_class: list[CharacterRange], is_negation: bool, target_state: int):
@@ -34,13 +34,19 @@ class CharacterClassMatcher(Callable[[str], int], Matcher):
         self.is_negation = is_negation
         self.next_state = target_state
 
-    def __call__(self, symbol: str) -> int | None:
-        predicate: Callable[[CharacterRange], bool] = lambda char_range: (char_range.start <= ord(symbol) <= char_range.end)
+    def __call__(self, remaining_text: str):
+        predicate: Callable[[CharacterRange], bool] = lambda char_range: (char_range.start <= ord(remaining_text[0]) <= char_range.end)
 
         # != is XOR since both are bool
         # Either negation + not any OR not negated + any
-        return self.next_state if self.is_negation != any(predicate(cr) for cr in self.character_class) else None
+        return (self.next_state, remaining_text[1:]) if self.is_negation != any(predicate(cr) for cr in self.character_class) else (None, remaining_text)
 
+class GreedyQuantifierMatcher(Callable[[str], int], Matcher):
+    def __init__(self):
+        pass
+
+    def __call__(self, symbol: str) -> int | None:
+        pass
 
 
 class Dfa:
@@ -51,13 +57,14 @@ class Dfa:
     def check(self, text: str):
         current_state = 0
 
-        for symbol in text:
+        remaining_text = text
+        while remaining_text:
             next_state_callable = self.transitions.get(current_state)
 
             if next_state_callable is None:
                 return False
 
-            current_state = next_state_callable(symbol)
+            current_state, remaining_text = next_state_callable(remaining_text)
 
             if current_state is None:
                 return False
