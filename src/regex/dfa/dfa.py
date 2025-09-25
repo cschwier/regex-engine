@@ -42,8 +42,11 @@ class CharacterClassMatcher(Callable[[str], int], Matcher):
         return (self.next_state, remaining_text[1:]) if self.is_negation != any(predicate(cr) for cr in self.character_class) else (None, remaining_text)
 
 class GreedyQuantifierMatcher(Callable[[str], int], Matcher):
-    def __init__(self):
-        pass
+    def __init__(self, matcher: Callable, min_repetitions: int, max_repetitions: int, target_state: int):
+        self.matcher = matcher
+        self.min_repetitions = min_repetitions
+        self.max_repetitions = max_repetitions
+        self.next_state = target_state
 
     def __call__(self, remaining_text: str) -> int | None:
         pass
