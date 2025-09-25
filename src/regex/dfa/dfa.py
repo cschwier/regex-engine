@@ -45,7 +45,7 @@ class GreedyQuantifierMatcher(Callable[[str], int], Matcher):
     def __init__(self):
         pass
 
-    def __call__(self, symbol: str) -> int | None:
+    def __call__(self, remaining_text: str) -> int | None:
         pass
 
 

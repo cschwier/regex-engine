@@ -22,6 +22,19 @@ def parse_character_group(character_group: str) -> tuple[list[CharacterRange], b
 
     return stack, is_negotiation
 
+# Frage Christian: Sollte die Funktion Teil der Klasse sein? Wieso (nicht)?
+def iterate_character_group(pattern: str, break_character: str, start_index: int) -> tuple[str, int]:
+    _i = start_index + 1
+    character_group = ""
+    while _i < len(pattern):
+        character = pattern[_i]
+        if character == break_character:
+            break
+        character_group += character
+        _i += 1
+    return character_group, _i
+
+
 class Parser:
 
     def __init__(self, pattern: str):
@@ -37,14 +50,7 @@ class Parser:
             matcher_state_index = i
             match character:
                 case "[":
-                    i += 1
-                    character_group = ""
-                    while i < len(self.pattern):
-                        character = self.pattern[i]
-                        if character == "]":
-                            break
-                        character_group += character
-                        i += 1
+                    character_group, i = iterate_character_group(self.pattern, break_character="]", start_index=i)
                     numeric_character_group, is_negation = parse_character_group(character_group)
                     transitions[matcher_state_index] = CharacterClassMatcher(numeric_character_group, is_negation, i+1)
                 case ".":
