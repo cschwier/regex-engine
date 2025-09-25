@@ -5,7 +5,10 @@ from regex import Parser
 
 class StarTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.testee = ...
+        self.testee = Parser("b*bd").as_predicate()
+
+    def test_abc_acceptance(self):
+        assert self.testee("bbbd")
 
 class PlusTest(unittest.TestCase):
     def setUp(self) -> None:

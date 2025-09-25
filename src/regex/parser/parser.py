@@ -1,4 +1,5 @@
-from typing import Callable, Any, Optional
+import math
+from typing import Callable
 
 from regex.dfa import Dfa
 from regex.dfa.dfa import LiteralMatcher, WildcardMatcher, CharacterClassMatcher, GreedyQuantifierMatcher
@@ -65,20 +66,21 @@ class Parser:
                     # Cases where previous matcher must be iterated upon. Since keys for transitions are monotonically
                     # increasing, so the previous transition is the one with the highest key
                     try:
-                        last_transition = transitions.pop(max(transitions, key=transitions.get))
+                        key_to_replace = max(transitions, key=transitions.get)
+                        last_transition = transitions.pop(key_to_replace)
                     except ValueError | KeyError:
                         raise AssertionError("Specified Greedy Quantifier but no previous transition available")
                     match character:
                         case "*":
-                            transitions[i] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=len(self.pattern[i:]), target_state=i+1)
+                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=False, target_state=i+1)
                         case "+":
-                            transitions[i] = GreedyQuantifierMatcher(last_transition, min_repetitions=1, max_repetitions=len(self.pattern[i:]), target_state=i+1)
+                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=1, max_repetitions=False, target_state=i+1)
                         case "?":
-                            transitions[i] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=1, target_state=i+1)
+                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=1, target_state=i+1)
                         case "{":
                             greedy_quantifier, i = iterate_pattern_until_character(self.pattern, break_character="}", start_index=i)
                             min_repetitions, max_repetitions = parse_explicit_greedy_quantifier(greedy_quantifier)
-                            transitions[i] = GreedyQuantifierMatcher(last_transition, min_repetitions=min_repetitions, max_repetitions=max_repetitions, target_state=i+1)
+                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=min_repetitions, max_repetitions=max_repetitions, target_state=i+1)
                 case ".":
                     transitions[i] = WildcardMatcher(i+1)
                 case _:
