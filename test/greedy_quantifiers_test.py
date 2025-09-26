@@ -5,10 +5,19 @@ from regex import Parser
 
 class StarTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.testee = Parser("b*bd").as_predicate()
+        self.testee = Parser("bb*bd").as_predicate()
 
-    def test_abc_acceptance(self):
+    def test_abc_acceptance_many(self):
+        assert self.testee("bbbbbbbbbd")
+
+    def test_abc_acceptance_some(self):
         assert self.testee("bbbd")
+
+    def test_abc_acceptance_min(self):
+        assert self.testee("bbd")
+
+    def test_abc_rejection(self):
+        assert not self.testee("bd")
 
 class PlusTest(unittest.TestCase):
     def setUp(self) -> None:
