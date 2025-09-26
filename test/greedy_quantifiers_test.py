@@ -21,7 +21,31 @@ class StarTest(unittest.TestCase):
 
 class PlusTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.testee = ...
+        self.testee = Parser("bb+b+bd").as_predicate()
+
+    def test_abc_acceptance_min(self):
+        assert self.testee("bbbbd")
+
+    def test_abc_acceptance_some(self):
+        assert self.testee("bbbbbbd")
+
+    def test_abc_acceptance_many(self):
+        assert self.testee("bbbbbbbbbbbbd")
+
+    def test_abc_rejection_1(self):
+        assert self.testee("bbbd")
+
+    def test_abc_rejection_2(self):
+        assert self.testee("bbbd")
+
+    def test_abc_rejection_3(self):
+        assert self.testee("bbd")
+
+    def test_abc_rejection_4(self):
+        assert self.testee("bd")
+
+    def test_abc_rejection_5(self):
+        assert self.testee("d")
 
 class QuestionMarkTest(unittest.TestCase):
     def setUp(self) -> None:
