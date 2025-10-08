@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Annotated, Literal
+from typing import Callable, Optional, Annotated, Literal, Any
 from abc import ABC, abstractmethod
 
 from regex.utils import CharacterRange
@@ -11,6 +11,12 @@ class Matcher(ABC):
     @abstractmethod
     def __call__(self, remaining_text: str) -> tuple[Optional[int], str]:
         pass
+
+    def reset(self):
+        pass
+
+    def has_next(self) -> bool:
+        return False
 
 
 class LiteralMatcher(Callable[[str], int], Matcher):
@@ -47,29 +53,35 @@ class GreedyQuantifierMatcher(Callable[[str], int], Matcher):
     # TODO: Literal[False] as indication for no max_repetitions seems a bit intransparent
     def __init__(self, matcher: Callable, min_repetitions: int, max_repetitions: int | Literal[False], target_state: int):
         self.matcher = matcher
-        self.min_repetitions = min_repetitions
-        self.max_repetitions = max_repetitions
         self.next_state = target_state
-        self.remaining_text_options = []
+        self.last_try = None
+
+    def _next_option(self, remaining_text: str):
+        # TODO
+        pass
+
+    def has_next(self) -> bool:
+        # TODO
+        pass
+
+    def reset(self):
+        # TODO
+        pass
+
 
     def __call__(self, remaining_text: str):
-        global in_backtracking
-
-        if not self.remaining_text_options:
-            if in_backtracking:
-                # In backtracking, but all options exhausted --> No match
-                in_backtracking = False
+        match self.remaining_text:
+            case None:
+                # Not executed yet
+                self._build_greediest_option(remaining_text)
+            case "":
+                # No more options available
                 return None, remaining_text
-            else:
-                # Not in backtracking + no Options: First iteration
-                self._build_all_options(remaining_text)
-                in_backtracking = True
 
-        # Using pop --> Starting from last, most greedy option
-        current_option = self.remaining_text_options.pop()
-        return self.next_state, current_option
+        return self.next_state, self._next_option()
 
-    def _build_all_options(self, input_text: str) -> None:
+
+    def _build_greediest_option(self, input_text: str) -> None:
         """
         Builds all possible remaining_text options
 
@@ -104,33 +116,40 @@ class Dfa:
         self.transitions = transitions
         self.end_states = end_states
 
-    def check(self, text: str):
-        global in_backtracking
 
-        next_state_callable = None
+
+    def check(self, text: str):
         current_state = 0
-        reset_backtracking = False
 
         remaining_text = text
-        while remaining_text:
-            current_state_callable = next_state_callable
+        handled_matchers = []
 
-            next_state_callable = self.transitions.get(current_state)
+        while remaining_text:   # bbbbbc -> c
+            # regex: ab*bc
+            # input: abbbbbc
 
-            if next_state_callable is None:
-                return False
+            # a -True-> bbbbb -True-> b -False->  bbbb -True-> b -True-> c -True-> ✅
 
-            current_state, remaining_text = next_state_callable(remaining_text)
+            next_matcher = self.transitions.get(current_state)
 
-            if not current_state:
-                if in_backtracking:
-                    reset_backtracking = True
-                    current_state, remaining_text = current_state_callable(remaining_text)
-                else:
+            # TODO: Changeme
+            if next_matcher is None:
+                next_matcher, remaining_text = self._backtrack(handled_matchers)
+                # No more options left in handled matchers --> RegEx fails
+                if not next_matcher:
                     return False
-            elif reset_backtracking:
-                in_backtracking = False
-                reset_backtracking = False
+
+            handled_matchers.insert(0, (next_matcher, remaining_text))
+            current_state, remaining_text = next_matcher(remaining_text)
 
         return current_state in [self.end_states]
 
+    def _backtrack(self, handled_matchers: list[tuple[Matcher, str]]) -> tuple[Optional[Matcher], Optional[str]]:
+        while handled_matchers:
+            matcher, remaining_text = handled_matchers.pop()
+            if matcher.has_next():
+                return matcher, remaining_text
+            else:
+                matcher.reset()
+
+        return None, None
