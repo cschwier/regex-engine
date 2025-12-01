@@ -72,9 +72,9 @@ class Parser:
                         raise AssertionError("Specified Greedy Quantifier but no previous transition available")
                     match character:
                         case "*":
-                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=False, target_state=i+1)
+                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=None, target_state=i+1)
                         case "+":
-                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=1, max_repetitions=False, target_state=i+1)
+                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=1, max_repetitions=None, target_state=i+1)
                         case "?":
                             transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=1, target_state=i+1)
                         case "{":
