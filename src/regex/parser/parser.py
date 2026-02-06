@@ -66,9 +66,9 @@ class Parser:
                     # Cases where previous matcher must be iterated upon. Since keys for transitions are monotonically
                     # increasing, so the previous transition is the one with the highest key
                     try:
-                        key_to_replace = max(transitions, key=transitions.get)
+                        key_to_replace = max(transitions)
                         last_transition = transitions.pop(key_to_replace)
-                    except ValueError | KeyError:
+                    except (ValueError, KeyError):
                         raise AssertionError("Specified Greedy Quantifier but no previous transition available")
                     match character:
                         case "*":
