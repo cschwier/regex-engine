@@ -73,5 +73,11 @@ class EnToEmTimesTest(unittest.TestCase):
         assert self.testee("abbbbbbba")
 
     def test_too_many(self):
-        assert not  self.testee("abbbbbbbba")
+        assert not self.testee("abbbbbbbba")
 
+class EmptyRemainingStringOnBacktracking(unittest.TestCase):
+    def setUp(self) -> None:
+        self.testee = Parser("ab{1,2}b{1,2}").as_predicate()
+
+    def test_back_track_on_empty_remaining_sequence(self):
+        assert self.testee("abb")
