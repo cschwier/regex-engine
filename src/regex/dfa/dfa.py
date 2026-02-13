@@ -51,7 +51,6 @@ class CharacterClassMatcher(Matcher):
         return (self.next_state, remaining_text[1:]) if self.is_negation != any(predicate(cr) for cr in self.character_class) else (None, remaining_text)
 
 class GreedyQuantifierMatcher(Matcher):
-    remaining_matcher_text: Optional[str]
     iteration_limit: Optional[int]
 
     def __init__(self, matcher: Matcher, min_repetitions: int, max_repetitions: Optional[int], target_state: int):
@@ -73,14 +72,9 @@ class GreedyQuantifierMatcher(Matcher):
         )
 
     def reset(self):
-        # TODO
-        self.remaining_matcher_text = None
         self.iteration_limit = self.max_repetitions
 
     def __call__(self, remaining_text: str):
-        # pattern: [ab]{2,3}b
-        # string: ababb
-
         i = 0
 
         while i < self.iteration_limit and remaining_text:
@@ -92,7 +86,6 @@ class GreedyQuantifierMatcher(Matcher):
             remaining_text = potential_remaining_text
             i += 1
 
-        # TODO: Check limit
         if i >= self.min_repetitions:
             self.last_check_succeeded = True
             self.iteration_limit -= 1
@@ -115,12 +108,7 @@ class Dfa:
         remaining_text = text
         handled_matchers: list[tuple[Callable, int]] = []
 
-        while remaining_text:   # bbbbbc -> c
-            # regex: ab*bc
-            # input: abbbbbc
-
-            # a -True-> bbbbb -True-> b -False->  bbbb -True-> b -True-> c -True-> ✅
-
+        while remaining_text:
             next_matcher = self.transitions.get(current_state)
 
             # TODO: Changeme
