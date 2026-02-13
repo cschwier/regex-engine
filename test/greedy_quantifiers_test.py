@@ -61,17 +61,17 @@ class EnOrMoreTimesTest(unittest.TestCase):
 
 class EnToEmTimesTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.testee = Parser("ab{2,3}b{2,3}").as_predicate()
+        self.testee = Parser("ab{2,3}b{3,4}a").as_predicate()
 
     def test_too_little(self):
-        assert not self.testee("abbb")
+        assert not self.testee("abbbba")
 
     def test_min(self):
-        assert self.testee("abbbb")
+        assert self.testee("abbbbba")
 
     def test_max(self):
-        assert self.testee("abbbbbb")
+        assert self.testee("abbbbbbba")
 
     def test_too_many(self):
-        assert not  self.testee("abbbbbbb")
+        assert not  self.testee("abbbbbbbba")
 
