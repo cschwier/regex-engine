@@ -35,15 +35,15 @@ def parse_explicit_greedy_quantifier(greedy_quantifier: str,) -> tuple[int, int]
 
 # Frage Christian: Sollte die Funktion Teil der Klasse sein? Wieso (nicht)?
 def iterate_pattern_until_character(pattern: str, break_character: str, start_index: int) -> tuple[str, int]:
-    _i = start_index + 1
+    increment = 1
     character_group = ""
-    while _i < len(pattern):
-        character = pattern[_i]
+    while (tmp := start_index+increment) < len(pattern):
+        character = pattern[tmp]
         if character == break_character:
             break
         character_group += character
-        _i += 1
-    return character_group, _i
+        increment += 1
+    return character_group, increment
 
 
 class Parser:
@@ -59,9 +59,10 @@ class Parser:
             character = self.pattern[i]
             match character:
                 case "[":
-                    character_group, i = iterate_pattern_until_character(self.pattern, break_character="]", start_index=i)
+                    character_group, increment = iterate_pattern_until_character(self.pattern, break_character="]", start_index=i)
                     numeric_character_group, is_negation = parse_character_group(character_group)
-                    transitions[i] = CharacterClassMatcher(numeric_character_group, is_negation, i+1)
+                    transitions[i] = CharacterClassMatcher(numeric_character_group, is_negation, i+increment+1)
+                    i += increment
                 case "*" | "+" | "?" | "{":
                     # Cases where previous matcher must be iterated upon. Since keys for transitions are monotonically
                     # increasing, so the previous transition is the one with the highest key
@@ -78,9 +79,10 @@ class Parser:
                         case "?":
                             transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=0, max_repetitions=1, target_state=i+1)
                         case "{":
-                            greedy_quantifier, i = iterate_pattern_until_character(self.pattern, break_character="}", start_index=i)
+                            greedy_quantifier, increment = iterate_pattern_until_character(self.pattern, break_character="}", start_index=i)
                             min_repetitions, max_repetitions = parse_explicit_greedy_quantifier(greedy_quantifier)
-                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=min_repetitions, max_repetitions=max_repetitions, target_state=i+1)
+                            transitions[key_to_replace] = GreedyQuantifierMatcher(last_transition, min_repetitions=min_repetitions, max_repetitions=max_repetitions, target_state=i+increment+1)
+                            i += increment
                 case ".":
                     transitions[i] = WildcardMatcher(i+1)
                 case _:
