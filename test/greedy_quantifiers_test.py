@@ -36,15 +36,12 @@ class PlusTest(unittest.TestCase):
         assert self.testee("bbbd")
 
     def test_abc_rejection_2(self):
-        assert self.testee("bbbd")
-
-    def test_abc_rejection_3(self):
         assert self.testee("bbd")
 
-    def test_abc_rejection_4(self):
+    def test_abc_rejection_3(self):
         assert self.testee("bd")
 
-    def test_abc_rejection_5(self):
+    def test_abc_rejection_4(self):
         assert self.testee("d")
 
 class QuestionMarkTest(unittest.TestCase):
@@ -74,6 +71,13 @@ class EnToEmTimesTest(unittest.TestCase):
 
     def test_too_many(self):
         assert not self.testee("abbbbbbbbc")
+
+class EdgeCaseTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.testee = Parser("ab{0,3}c{1,2}d").as_predicate()
+
+    def test_foo(self):
+        assert self.testee("abbcd")
 
 class EmptyRemainingStringOnBacktracking(unittest.TestCase):
     def setUp(self) -> None:
