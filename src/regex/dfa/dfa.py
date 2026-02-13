@@ -126,7 +126,7 @@ class Dfa:
                 if not next_matcher:
                     return False
 
-            handled_matchers.insert(0, (next_matcher, remaining_text))
+            handled_matchers.append((next_matcher, remaining_text))
             current_state, remaining_text = next_matcher(remaining_text)
 
         return current_state in [self.end_states]
