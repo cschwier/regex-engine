@@ -65,9 +65,11 @@ class GreedyQuantifierMatcher(Matcher):
 
     def has_next(self) -> bool:
         return (
-                not self.iteration_limit
-                or
-                self.iteration_limit > self.min_repetitions
+            self.last_check_succeeded
+                and (
+                    not self.iteration_limit
+                    or  self.iteration_limit >= self.min_repetitions
+                )
         )
 
     def reset(self):
@@ -92,9 +94,11 @@ class GreedyQuantifierMatcher(Matcher):
 
         # TODO: Check limit
         if i >= self.min_repetitions:
+            self.last_check_succeeded = True
             self.iteration_limit -= 1
             return self.next_state, remaining_text
         else:
+            self.last_check_succeeded = False
             return None, remaining_text
 
 
