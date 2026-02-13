@@ -88,7 +88,7 @@ class GreedyQuantifierMatcher(Matcher):
 
         if i >= self.min_repetitions:
             self.last_check_succeeded = True
-            self.iteration_limit -= 1
+            self.iteration_limit = min([self.iteration_limit-1, i-1])
             return self.next_state, remaining_text
         else:
             self.last_check_succeeded = False
